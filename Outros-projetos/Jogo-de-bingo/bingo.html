@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bingo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .controles {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .resultado {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f1c40f;
+            border-radius: 8px;
+            color: #34495e;
+        }
+        .historico {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 100%;
+            justify-content: center;
+        }
+        .bola {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: bold;
+            color: white;
+        }
+        .letra-B { background-color: #e74c3c; }
+        .letra-I { background-color: #2ecc71; }
+        .letra-N { background-color: #3498db; }
+        .letra-G { background-color: #9b59b6; }
+        .letra-O { background-color: #f39c12; }
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jogo de Bingo</h1>
+    
+    <div class="controles">
+        <button id="sortearBtn">Sortear Número</button>
+        <button id="reiniciarBtn">Reiniciar Jogo</button>
+    </div>
+    
+    <div class="resultado" id="resultado">
+        Clique em "Sortear Número" para iniciar o jogo
+    </div>
+    
+    <div class="status" id="status">
+        Números sorteados: 0/75
+    </div>
+    
+    <h2>Histórico de Sorteios</h2>
+    <div class="historico" id="historico"></div>
+
+    <script>
+        /* 
+        * Sistema de Bingo com as seguintes regras:
+        * - Letra B: números de 1 a 15
+        * - Letra I: números de 16 a 30
+        * - Letra N: números de 31 a 45
+        * - Letra G: números de 46 a 60
+        * - Letra O: números de 61 a 75
+        * - Cada combinação letra+número só pode ser sorteada uma vez por jogo
+        */
+        
+        // Estado do jogo
+        let numerosSorteados = [];
+        let jogoEmAndamento = true;
+        
+        // Elementos da interface
+        const sortearBtn = document.getElementById('sortearBtn');
+        const reiniciarBtn = document.getElementById('reiniciarBtn');
+        const resultado = document.getElementById('resultado');
+        const historico = document.getElementById('historico');
+        const statusEl = document.getElementById('status');
+        
+        // Sortear um número de uma letra específica (sem repetição)
+        function sortearNumeroBingo(letra) {
+            let min, max;
+            
+            switch (letra) {
+                case 'B':
+                    min = 1;
+                    max = 15;
+                    break;
+                case 'I':
+                    min = 16;
+                    max = 30;
+                    break;
+                case 'N':
+                    min = 31;
+                    max = 45;
+                    break;
+                case 'G':
+                    min = 46;
+                    max = 60;
+                    break;
+                case 'O':
+                    min = 61;
+                    max = 75;
+                    break;
+                default:
+                    return null;
+            }
+            
+            // Tenta encontrar um número não sorteado na faixa da letra
+            const numerosDisponiveisNaFaixa = [];
+            for (let i = min; i <= max; i++) {
+                const combinacao = letra + i;
+                if (!numerosSorteados.includes(combinacao)) {
+                    numerosDisponiveisNaFaixa.push(i);
+                }
+            }
+            
+            // Se todos os números da faixa já foram sorteados, retorna null
+            if (numerosDisponiveisNaFaixa.length === 0) {
+                return null;
+            }
+            
+            // Sorteia aleatoriamente um dos números disponíveis
+            const indice = Math.floor(Math.random() * numerosDisponiveisNaFaixa.length);
+            return numerosDisponiveisNaFaixa[indice];
+        }
+        
+        // Sorteia uma letra e verifica se ainda tem números disponíveis
+        function sortearLetraBingo() {
+            const letras = ['B', 'I', 'N', 'G', 'O'];
+            
+            // Filtra apenas letras que ainda têm números disponíveis
+            const letrasDisponiveis = letras.filter(letra => {
+                let min, max;
+                switch (letra) {
+                    case 'B': min = 1; max = 15; break;
+                    case 'I': min = 16; max = 30; break;
+                    case 'N': min = 31; max = 45; break;
+                    case 'G': min = 46; max = 60; break;
+                    case 'O': min = 61; max = 75; break;
+                }
+                
+                for (let i = min; i <= max; i++) {
+                    const combinacao = letra + i;
+                    if (!numerosSorteados.includes(combinacao)) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            
+            // Se não houver mais letras disponíveis, retorna null
+            if (letrasDisponiveis.length === 0) {
+                return null;
+            }
+            
+            // Sorteia aleatoriamente uma das letras disponíveis
+            const indice = Math.floor(Math.random() * letrasDisponiveis.length);
+            return letrasDisponiveis[indice];
+        }
+        
+        // Função para sortear uma combinação letra+número
+        function sortear() {
+            // Verifica se o jogo já terminou
+            if (!jogoEmAndamento) {
+                resultado.textContent = "O jogo terminou. Clique em 'Reiniciar Jogo'";
+                return;
+            }
+            
+            // Sorteia uma letra que ainda tenha números disponíveis
+            const letraSorteada = sortearLetraBingo();
+            
+            // Se não houver mais letras disponíveis, o jogo acabou
+            if (letraSorteada === null) {
+                jogoEmAndamento = false;
+                resultado.textContent = "Todos os números já foram sorteados!";
+                sortearBtn.disabled = true;
+                return;
+            }
+            
+            // Sorteia um número para a letra sorteada
+            const numeroSorteado = sortearNumeroBingo(letraSorteada);
+            
+            // Adiciona a combinação ao histórico
+            const combinacao = letraSorteada + numeroSorteado;
+            numerosSorteados.push(combinacao);
+            
+            // Atualiza a interface
+            resultado.textContent = `${letraSorteada} - ${numeroSorteado}`;
+            
+            // Adiciona bola ao histórico
+            const bola = document.createElement('div');
+            bola.className = `bola letra-${letraSorteada}`;
+            bola.textContent = `${letraSorteada}${numeroSorteado}`;
+            historico.appendChild(bola);
+            
+            // Atualiza status
+            statusEl.textContent = `Números sorteados: ${numerosSorteados.length}/75`;
+            
+            // Se chegamos a 75 sorteios, o jogo acabou
+            if (numerosSorteados.length === 75) {
+                jogoEmAndamento = false;
+                sortearBtn.disabled = true;
+                resultado.textContent = "Todos os 75 números foram sorteados!";
+            }
+        }
+        
+        // Reinicia o jogo
+        function reiniciarJogo() {
+            numerosSorteados = [];
+            jogoEmAndamento = true;
+            sortearBtn.disabled = false;
+            resultado.textContent = "Clique em 'Sortear Número' para iniciar o jogo";
+            historico.innerHTML = '';
+            statusEl.textContent = `Números sorteados: 0/75`;
+        }
+        
+        // Adiciona eventos aos botões
+        sortearBtn.addEventListener('click', sortear);
+        reiniciarBtn.addEventListener('click', reiniciarJogo);
+    </script>
+</body>
+</html>
+
+</script>
+</body>
+</html>
