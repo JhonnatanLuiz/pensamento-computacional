@@ -1,0 +1,224 @@
+/* --- Reset e Configurações Globais --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f9;
+    color: #333;
+    padding: 40px;
+}
+
+/* --- Container Principal --- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* --- Formulário de Adicionar Tarefa --- */
+#task-form {
+    display: flex;
+    max-width: 800px; /* Aumentado para caber o novo input */
+    margin: 0 auto 40px auto;
+    align-items: flex-end;
+}
+
+.form-inputs {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#task-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s;
+}
+
+#task-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.schedule-container {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.schedule-container label {
+    font-size: 0.9em;
+    color: #666;
+    margin-right: 10px;
+}
+
+#schedule-input {
+    padding: 5px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+#task-form button {
+    padding: 12px 25px;
+    border: none;
+    background: #4a90e2;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s;
+}
+
+#task-form button:hover {
+    background: #357abd;
+}
+
+/* --- Quadro Kanban --- */
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.task-column {
+    background-color: #eef2f5;
+    padding: 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s, border 0.3s;
+}
+
+.task-column h2 {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dce4e9;
+}
+
+.task-list {
+    min-height: 200px;
+}
+
+/* --- Cartão de Tarefa --- */
+.task-card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    list-style: none;
+    transition: box-shadow 0.3s, opacity 0.3s;
+}
+
+.task-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.task-card p {
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+.task-card .time-info {
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.time-info.status-pending {
+    color: #4a90e2; /* Azul para agendado/criado */
+}
+
+.time-info.status-in_progress {
+    color: #f5a623; /* Laranja para iniciado */
+}
+
+.time-info.status-completed {
+    color: #28a745; /* Verde para concluído */
+}
+
+.task-card .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-card .move-buttons button {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s;
+    margin-right: 5px; /* Espaçamento entre botões */
+}
+
+.task-card .move-buttons button:last-child {
+    margin-right: 0;
+}
+
+.task-card .move-buttons button:hover {
+    background: #5a6268;
+}
+
+.delete-btn {
+    background: transparent;
+    color: #aaa;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.delete-btn:hover {
+    color: #e24a4a;
+}
+
+/* --- Estilos de Drag and Drop --- */
+.task-card.dragging {
+    opacity: 0.5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.task-column.drag-over {
+    background-color: #dce4e9;
+    border: 2px dashed #a0b4c2;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 900px) {
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+    #task-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #task-form button {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}

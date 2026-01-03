@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro Kanban de Tarefas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Meu Quadro Kanban</h1>
+        <form id="task-form">
+            <div class="form-inputs">
+                <input type="text" id="task-input" placeholder="Adicionar uma nova tarefa..." required>
+                <div class="schedule-container">
+                    <label for="schedule-input">Agendar para:</label>
+                    <input type="datetime-local" id="schedule-input">
+                </div>
+            </div>
+            <button type="submit">Adicionar Tarefa</button>
+        </form>
+
+        <div class="kanban-board">
+            <!-- Coluna Pendente -->
+            <div class="task-column" id="pending-column">
+                <h2>Pendente</h2>
+                <div class="task-list" id="pending-tasks"></div>
+            </div>
+
+            <!-- Coluna Executando -->
+            <div class="task-column" id="inprogress-column">
+                <h2>Executando</h2>
+                <div class="task-list" id="inprogress-tasks"></div>
+            </div>
+
+            <!-- Coluna Concluída -->
+            <div class="task-column" id="completed-column">
+                <h2>Concluída</h2>
+                <div class="task-list" id="completed-tasks"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
